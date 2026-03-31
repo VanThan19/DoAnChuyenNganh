@@ -1,0 +1,151 @@
+:root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --text-main: #111827;
+    --text-muted: #6b7280;
+    --bg-light: #f9fafb;
+    --white: #ffffff;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-light);
+    color: var(--text-main);
+    margin: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Layout Grid */
+.detail-grid {
+    display: flex;
+    gap: 40px;
+    margin-top: 20px;
+    align-items: flex-start;
+}
+
+.main-col { flex: 7; }
+
+.side-col {
+    flex: 3;
+    position: sticky;
+    top: 20px;
+    z-index: 10;
+}
+
+/* Sidebar Card */
+.course-card-side {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    overflow: hidden;
+    border: 1px solid #f0f0f0;
+}
+
+.side-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.side-content { padding: 24px; }
+
+.price-big {
+    font-size: 32px;
+    color: var(--primary);
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.btn-reg {
+    width: 100%;
+    padding: 16px;
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-reg:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+}
+
+/* Tabs System */
+.tab-nav {
+    border-bottom: 2px solid #e5e7eb;
+    margin: 30px 0 20px;
+    display: flex;
+    gap: 30px;
+}
+
+.tab-link {
+    padding: 12px 0;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-bottom: 3px solid transparent;
+    transition: 0.3s;
+}
+
+.tab-link.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.tab-pane {
+    display: none;
+    line-height: 1.8;
+    color: #4b5563;
+    animation: fadeIn 0.5s ease;
+}
+
+.tab-pane.active { display: block; }
+
+.spec-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed #eee;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.roadmap-list {
+    list-style: none;
+    padding-left: 20px;
+    border-left: 2px solid #e5e7eb; /* Đường kẻ dọc bên trái */
+    margin-left: 10px;
+}
+
+.roadmap-list li {
+    position: relative;
+    margin-bottom: 25px;
+    padding-left: 25px;
+}
+
+/* Tạo các dấu chấm xanh trên đường kẻ */
+.roadmap-list li::before {
+    content: "";
+    position: absolute;
+    left: -32px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    background: var(--primary);
+    border: 3px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--primary);
+}

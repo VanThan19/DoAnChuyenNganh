@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Học trực tuyến | EduLang</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 350px;
+            --header-height: 60px;
+            --bg-dark: #111827;
+            --bg-sidebar: #1f2937;
+            --primary: #2563eb;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: #f3f4f6;
+            overflow: hidden; /* Để thanh cuộn riêng cho video và playlist */
+        }
+
+        /* Layout chính */
+        .main-container {
+            display: flex;
+            height: 100vh;
+            padding-top: var(--header-height);
+            box-sizing: border-box;
+        }
+
+        /* Header thanh mảnh */
+        header {
+            height: var(--header-height);
+            background: #111;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            border-bottom: 1px solid #374151;
+        }
+
+        /* Khu vực Video (Bên trái) */
+        .video-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: #000;
+        }
+
+        .video-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        video {
+            width: 100%;
+            display: block;
+            aspect-ratio: 16 / 9;
+        }
+
+        /* Khu vực Playlist (Bên phải) */
+        .playlist-sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-sidebar);
+            border-left: 1px solid #374151;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .playlist-header {
+            padding: 20px;
+            border-bottom: 1px solid #374151;
+            background: #111827;
+        }
+
+        .lesson-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .lesson-item {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #9ca3af;
+            border-bottom: 1px solid #374151;
+            transition: all 0.2s;
+        }
+
+        .lesson-item:hover {
+            background: #374151;
+            color: #fff;
+        }
+
+        .lesson-item.active {
+            background: rgba(37, 99, 235, 0.2);
+            color: #fff;
+            border-left: 4px solid var(--primary);
+        }
+
+        .lesson-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-container { flex-direction: column; overflow: auto; }
+            .playlist-sidebar { width: 100%; height: auto; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="/home" style="color: white; text-decoration: none; font-weight: bold;">
+        <i class="fa fa-chevron-left"></i> Quay lại trang chủ
+    </a>
+    <span style="margin-left: 20px; color: #9ca3af;" th:text="${course.courseName}"></span>
+</header>
+
+<div class="main-container">
+    <div class="video-content">
+        <div class="video-wrapper" style="background: #2d3748; display: flex; align-items: center; justify-content: center; flex-direction: column; min-height: 450px;">
+            <i class="fa fa-photo-film" style="font-size: 80px; color: #4a5568; margin-bottom: 20px;"></i>
+            <h3 style="color: #a0aec0;">Video bài giảng đang được cập nhật...</h3>
+            <p style="color: #718096;">Học viên Nguyễn Văn Thân vui lòng xem tài liệu bên dưới.</p>
+        </div>
+
+        <div style="max-width: 1000px; margin: 30px auto;">
+            <h1 th:text="${current != null ? current.title : 'Đang tải bài học...'}" style="font-size: 28px; color: #60a5fa;"></h1>
+            <hr style="border: 0; border-top: 1px solid #374151; margin: 20px 0;">
+
+            <div class="lesson-description" style="background: #1f2937; padding: 20px; border-radius: 8px;">
+                <h4 style="margin-top: 0;"><i class="fa fa-info-circle"></i> Ghi chú bài học:</h4>
+                <p style="color: #9ca3af; line-height: 1.6;">
+                    Đây là nội dung học thuật dành cho sinh viên IT Vinh Uni.
+                    Dù video chưa sẵn sàng, bạn vẫn có thể theo dõi tiêu đề và danh sách bài học ở bên phải để nắm bắt lộ trình.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="playlist-sidebar">
+        <div class="playlist-header">
+            <h3 style="margin: 0; font-size: 16px;">Nội dung khóa học</h3>
+        </div>
+        <div class="lesson-list">
+            <a th:each="ls : ${lessons}"
+               th:href="@{'/learning/' + ${course.id} + '?lessonId=' + ${ls.id}}"
+               class="lesson-item"
+               th:classappend="${ls.id == current.id} ? 'active' : ''">
+                <div class="lesson-info">
+                    <i class="fa" th:classappend="${ls.id == current.id} ? 'fa-play-circle' : 'fa-circle-play'"></i>
+                    <div>
+                        <div style="font-size: 14px; font-weight: 500;" th:text="${ls.orderIndex} + '. ' + ${ls.title}"></div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

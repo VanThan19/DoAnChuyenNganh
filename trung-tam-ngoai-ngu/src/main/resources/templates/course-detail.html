@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${course.courseName} + ' - EduLang'"></title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" th:href="@{/css/course-detail.css}">
+</head>
+<body>
+
+<div class="container">
+  <nav style="font-size: 14px; color: #6b7280; margin-bottom: 20px;">
+    Trang chủ &nbsp;/&nbsp; Khóa học &nbsp;/&nbsp; <span th:text="${course.courseName}"></span>
+  </nav>
+
+  <div class="detail-grid">
+    <div class="main-col">
+      <h1 th:text="${course.courseName}" style="font-size: 32px; margin: 0 0 16px 0;"></h1>
+
+      <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 24px;">
+        <span style="background: #eff6ff; color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600;" th:text="${course.level}">Level</span>
+        <span><i class="fa fa-star" style="color: #fbbf24;"></i> 4.9 (120 đánh giá)</span>
+        <span><i class="fa fa-graduation-cap"></i> 850 học viên</span>
+      </div>
+
+      <div class="tab-nav">
+        <div class="tab-link active" onclick="openTab(event, 'overview')">Tổng quan</div>
+        <div class="tab-link" onclick="openTab(event, 'roadmap')">Lộ trình</div>
+        <div class="tab-link" onclick="openTab(event, 'faq')">Hỏi đáp</div>
+      </div>
+
+      <div id="overview" class="tab-pane active">
+        <h3 style="color: #111827;">Giới thiệu khóa học</h3>
+        <div th:utext="${course.description}"></div>
+
+        <h3 style="margin-top: 30px; color: #111827;">Bạn sẽ nhận được gì?</h3>
+        <ul style="padding-left: 20px; list-style-type: none;">
+          <li style="margin-bottom: 10px;"><i class="fa fa-check-circle" style="color: #10b981; margin-right: 10px;"></i> Lộ trình cá nhân hóa dựa trên trình độ hiện tại.</li>
+          <li style="margin-bottom: 10px;"><i class="fa fa-check-circle" style="color: #10b981; margin-right: 10px;"></i> Hỗ trợ giải đáp 24/7 từ hệ thống AI Mentor.</li>
+          <li style="margin-bottom: 10px;"><i class="fa fa-check-circle" style="color: #10b981; margin-right: 10px;"></i> Tài liệu học tập bản quyền từ EduLang.</li>
+        </ul>
+      </div>
+
+      <div id="roadmap" class="tab-pane">
+        <h3 style="color: #111827; margin-bottom: 20px;">
+          <i class="fa fa-map-signs" style="color: var(--primary);"></i> Lộ trình đào tạo chi tiết
+        </h3>
+
+        <ul class="roadmap-list">
+          <th:block th:utext="${course.roadmap}"></th:block>
+        </ul>
+
+        <p th:if="${course.roadmap == null || course.roadmap == ''}">
+          Lộ trình chi tiết đang được cập nhật cho khóa học này...
+        </p>
+      </div>
+    </div>
+
+    <div class="side-col">
+      <div class="course-card-side">
+        <img th:src="@{'/images/' + ${course.image}}" class="side-img" alt="Course Thumbnail">
+        <div class="side-content">
+          <div class="price-big" th:text="${#numbers.formatDecimal(course.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></div>
+
+          <div th:if="${success}" class="alert success" th:text="${success}"></div>
+          <div th:if="${error}" class="alert error" th:text="${error}"></div>
+
+
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+
+              <!-- ✅ CASE 0: Đã học -->
+              <a th:if="${status == 'PAID' || status == 'ACTIVE'}"
+                 th:href="@{'/learning/' + ${course.id}}"
+                 class="btn-reg">
+                🎓 VÀO HỌC NGAY
+              </a>
+
+              <!-- 🔥 CASE 1: CHƯA đăng ký -->
+              <div th:if="${status == null}">
+
+                <!-- 🚀 đăng ký nhanh -->
+                <form th:action="@{/enroll/auto}" method="POST">
+                  <input type="hidden" name="courseId" th:value="${course.id}">
+                  <button class="btn-reg">🚀 ĐĂNG KÝ NGAY</button>
+                </form>
+
+                <!-- 💬 messenger -->
+                <a href="https://m.me/61574751056691"
+                   target="_blank"
+                   class="btn-reg"
+                   style="background:#6366f1;">
+                  💬 NHẮN TƯ VẤN
+                </a>
+              </div>
+
+              <!-- 💳 CASE 2: đã đăng ký -->
+              <a th:if="${status == 'PENDING' || status == 'APPROVED'}"
+                 th:href="@{'/payment/' + ${course.id}}"
+                 class="btn-reg"
+                 style="background: orange;">
+                💳 THANH TOÁN NGAY
+              </a>
+
+              <p style="font-size: 13px; color: gray;">
+                ⚡ Đăng ký nhanh: xử lý tự động<br>
+                💬 Tư vấn: được hỗ trợ chọn lớp phù hợp
+              </p>
+
+            </div>
+
+          </div>
+
+
+
+          <div style="margin-top: 24px;">
+            <div class="spec-item">
+              <span><i class="fa fa-calendar-check"></i> Khai giảng:</span>
+              <strong>28/03/2026</strong>
+            </div>
+            <div class="spec-item">
+              <span><i class="fa fa-clock"></i> Thời lượng:</span>
+              <strong th:text="${course.duration} + ' tháng'"></strong>
+            </div>
+            <div class="spec-item">
+              <span><i class="fa fa-user-tie"></i> Giảng viên:</span>
+              <strong>EduLang Mentor</strong>
+            </div>
+            <div class="spec-item">
+              <span><i class="fa fa-bolt"></i> Hỗ trợ AI:</span>
+              <strong style="color: #10b981;">Sẵn sàng 24/7</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openTab(evt, tabName) {
+      let panes = document.getElementsByClassName("tab-pane");
+      for (let p of panes) p.classList.remove("active");
+
+      let links = document.getElementsByClassName("tab-link");
+      for (let l of links) l.classList.remove("active");
+
+      document.getElementById(tabName).classList.add("active");
+      evt.currentTarget.classList.add("active");
+  }
+
+</script>
+<script th:src="@{/js/course-detail.js}"></script>
+</body>
+</html>

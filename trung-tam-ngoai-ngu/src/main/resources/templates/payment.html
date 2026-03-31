@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="payment-box">
+  <h2>Thanh toán khóa học</h2>
+
+  <p>Số tiền:
+    <strong th:text="${#numbers.formatDecimal(course.price,0,'COMMA',0,'POINT')} + ' ₫'"></strong>
+  </p>
+
+  <p>Ngân hàng: MB Bank</p>
+  <p>Số tài khoản: 123456789</p>
+  <p>Chủ tài khoản: EDU LANG</p>
+
+  <p>Nội dung chuyển khoản:</p>
+  <strong th:text="${course.id}"></strong>
+
+  <img src="/images/qr.png" width="200">
+
+  <!-- 🔥 NÚT XÁC NHẬN -->
+  <form th:action="@{/payment/confirm}" method="POST">
+    <input type="hidden" name="courseId" th:value="${course.id}">
+    <button class="btn-reg" style="margin-top:20px;">
+      ✔ Tôi đã thanh toán
+    </button>
+  </form>
+</div>
+</body>
+</html>
